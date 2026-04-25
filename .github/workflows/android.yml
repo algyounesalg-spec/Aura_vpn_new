@@ -23,6 +23,8 @@ jobs:
         run: |
           unzip "my-app.zip"
           cd android
+          sed -i 's/@style\/AppTheme.NoActionBarLaunch/@style\/Theme.AppCompat.Light.NoActionBar/g' app/src/main/AndroidManifest.xml
+          sed -i '/splash/d' app/src/main/res/values/styles.xml || true
           chmod +x gradlew
           ./gradlew assembleDebug
 
