@@ -8,21 +8,25 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
       - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
           java-version: '21'
           distribution: 'temurin'
           
-      - name: Extract and Build
+      - name: Extract and Fix Resources
         run: |
           unzip "my-app.zip"
           cd android
+          mkdir -p app/src/main/res/drawable
+          mkdir -p app/src/main/res/mipmap-mdpi
+          touch app/src/main/res/drawable/splash.png
+          touch app/src/main/res/mipmap-mdpi/ic_launcher.png
+          touch app/src/main/res/mipmap-mdpi/ic_launcher_foreground.png
+          touch app/src/main/res/mipmap-mdpi/ic_launcher_round.png
+          sed -i 's/android:icon="[^"]*"/android:icon="@android:drawable\/ic_menu_info_details"/g' app/src/main/AndroidManifest.xml
+          sed -i 's/android:roundIcon="[^"]*"//g' app/src/main/AndroidManifest.xml
+          sed -i 's/@style\/AppTheme.NoActionBarLaunch/@style\/Theme.AppCompat.Light.NoActionBar/g' app/src/main/AndroidManifest.xml
           chmod +x gradlew
           ./gradlew assembleDebug
 
